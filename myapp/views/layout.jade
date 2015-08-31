@@ -27,6 +27,35 @@ html
           <!-- logo for regular state and mobile devices -->
           span.log-lg <b>Admin</b>LTE
         nav.navbar.navbar-static-top(role='navigation')
+          // Navbar Left Menu
+          .navbar-left-menu
+            ul.nav.navbar-nav
+              li
+                a(href='/')
+                  | Home
+              if user
+                li.dropdown.notifications-menu
+                  a.dropdown-toggle(href='#', data-toggle='dropdown')
+                    | User
+                  ul.dropdown-menu
+                    li.header User manager
+                    li
+                      // inner menu: contains the actual data
+                      ul.menu
+                        li
+                          a(href='/users')
+                            i.fa.fa-users.text-aqua
+                            |  View all
+                        li
+                          a(href='/users/create')
+                            i.fa.fa-warning.text-yellow
+                            |  Create
+                    li.footer
+                      a(href='#') Close me
+              else
+                li
+                  a(href='/users/login')
+                    | Login
           // Navbar Right Menu
           .navbar-custom-menu
             ul.nav.navbar-nav
@@ -182,14 +211,24 @@ html
               li.dropdown.user.user-menu
                 a.dropdown-toggle(href='#', data-toggle='dropdown')
                   img.user-image(src='/dist/img/user2-160x160.jpg', alt='User Image')
-                  span.hidden-xs Alexander Pierce
+                  span.hidden-xs
+                    if user
+                      =user.username
+                    else
+                      | Guest
                 ul.dropdown-menu
                   // User image
                   li.user-header
                     img.img-circle(src='/dist/img/user2-160x160.jpg', alt='User Image')
                     p
-                      | Alexander Pierce - Web Developer
-                      small Member since Nov. 2012
+                      if user
+                        =user.username
+                        small Member since 
+                        small=user.created_at
+                      else
+                        | Guest
+                        small Plase 
+                        a(href='./login')
                   // Menu Body
                   li.user-body
                     .col-xs-4.text-center
@@ -216,63 +255,18 @@ html
               a(href='#')
                 i.fa.fa-dashboard
                 |  Home
-            li.active Dashboard
+            block breadcrumb
         // Main content
         section.content
           // /.row
           .row
             .col-md-12
-              .callout.callout-info
-                block content
+              block alert
             // /.col
           // /.row
-          // Info boxes
+          // Content block
           .row
-            .col-md-3.col-sm-6.col-xs-12
-              .info-box
-                span.info-box-icon.bg-aqua
-                  i.ion.ion-ios-gear-outline
-                .info-box-content
-                  span.info-box-text CPU Traffic
-                  span.info-box-number
-                    | 90
-                    small %
-                // /.info-box-content
-              // /.info-box
-            // /.col
-            .col-md-3.col-sm-6.col-xs-12
-              .info-box
-                span.info-box-icon.bg-red
-                  i.fa.fa-google-plus
-                .info-box-content
-                  span.info-box-text Likes
-                  span.info-box-number 41,410
-                // /.info-box-content
-              // /.info-box
-            // /.col
-            // fix for small devices only
-            .clearfix.visible-sm-block
-            .col-md-3.col-sm-6.col-xs-12
-              .info-box
-                span.info-box-icon.bg-green
-                  i.ion.ion-ios-cart-outline
-                .info-box-content
-                  span.info-box-text Sales
-                  span.info-box-number 760
-                // /.info-box-content
-              // /.info-box
-            // /.col
-            .col-md-3.col-sm-6.col-xs-12
-              .info-box
-                span.info-box-icon.bg-yellow
-                  i.ion.ion-ios-people-outline
-                .info-box-content
-                  span.info-box-text New Members
-                  span.info-box-number 2,000
-                // /.info-box-content
-              // /.info-box
-            // /.col
-        // /.content
+            block content
       // /.content-wrapper
 
   script(src='/plugins/jQuery/jQuery-2.1.4.min.js')

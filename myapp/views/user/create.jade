@@ -1,4 +1,60 @@
 extends ../layout
-block content
-  h3= test
-  h3= abc
+
+block breadcrumb
+  li
+    a(href='/users')
+      | user
+  li.active create
+
+block alert
+  if !success
+    .callout.callout-warning
+      h4 Errors!
+      p
+        ul
+          each err in errors.errors
+            li= err.message
+
+block content 
+  // right column
+  .col-md-12
+    // Horizontal Form
+    .box.box-info
+      .box-header.with-border
+        h3.box-title Create new user
+      // /.box-header
+      // form start
+      form.form-horizontal(method='post')
+        .box-body
+          .form-group
+            label.col-sm-2.control-label(for='username') Username
+            .col-sm-10
+              input#username.form-control(type='text', placeholder='Username', name='username')
+          .form-group
+            label.col-sm-2.control-label(for='email') Email
+            .col-sm-10
+              input#email.form-control(type='email', placeholder='Email' name='email')
+          .form-group
+            label.col-sm-2.control-label(for='password') Password
+            .col-sm-10
+              input#password.form-control(type='password', placeholder='Password', name='password')
+          .form-group
+            label.col-sm-2.control-label(for='password2') Confirm Password
+            .col-sm-10
+              input#password2.form-control(type='password', placeholder='Confirm Password', name='password2')
+          .form-group
+            label.col-sm-2.control-label Group
+            .col-sm-10
+              select.form-control(name='group')
+                option(value=1) Super Admin
+                option(value=2) Admin
+                option(value=3) Member
+                option(value=4) Guest
+                option(value=5) Banned
+        // /.box-body
+        .box-footer
+          button.btn.btn-info.pull-right(type='submit') Create
+        // /.box-footer
+    // /.box
+  // /.col (right)
+

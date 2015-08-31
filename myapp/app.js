@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require('multer'); 
 var session = require('express-session');
 var flash = require('connect-flash');
 
@@ -21,7 +22,7 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('Seasad@!#DFS34qfs435123f4q357^5'));
 app.use(session({
     secret: 'cookie_secret',
@@ -37,6 +38,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static(path.join(__dirname + '/bower_components')));
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(function (req, res, next) {
+  res.locals.user = req.user ? req.user : false;
+  console.log(res.locals.user);
+  next();
+});
 
 app.use('/', routes);
 app.use('/users', users);

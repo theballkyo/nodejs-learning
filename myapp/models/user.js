@@ -5,7 +5,18 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true,
     },
-    password: DataTypes.STRING(32),
+    password: {
+      type: DataTypes.STRING(32),
+      validate: {
+        notEmpty: {
+          msg: 'รหัสผ่านห้ามว่าง'
+        }, 
+        len: {
+          args: [8,64],
+          msg: 'รหัสผ่านความยาวต้องมี 8-64 ตัวอักษร'
+        }
+      }
+    },
     email: {
       type: DataTypes.STRING,
       validate: {

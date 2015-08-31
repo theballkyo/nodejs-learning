@@ -1,9 +1,9 @@
-extends layout
+extends ../layout
 
 block alert
 	.callout.callout-info
 		h3= title
 		p Welcome to #{title}
 		ul.list-unstyled
-			each user in users.lenght ? users : []
-				li= user.email
+			li
+				=user.username
