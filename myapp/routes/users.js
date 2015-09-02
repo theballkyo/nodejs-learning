@@ -4,7 +4,7 @@ var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
 var models = require('../models');
-
+var underscore = require('underscore');
 var data = {};
 
 passport.use('login', new LocalStrategy({
@@ -42,11 +42,22 @@ passport.use('login', new LocalStrategy({
 }));
 
 router.use(function(req, res, next) {
-  res.locals.success = true;
   if (!req.user && req.path !== '/login')
     //return res.redirect('./login');
-    next();
+    return next();
+  next();
+
 });
+
+router.use('/create', function(req, res, next) {
+
+  res.locals.errors =  {'errors': [], 'msg': [], 'err': false};
+  res.locals.isError = function(path, errors) {
+    return underscore.findWhere(errors, {path: path}) !== undefined;
+  };
+  next();
+});
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.render('user/index');
@@ -72,29 +83,38 @@ router.post('/login',
 );
 
 router.post('/create', function(req, res, next) {
-  console.log(req.body);
-  // Table created
-  models.User
-  .build({
-    username: '',
-    password: '111',
-    email: 'localhost1@aaa',
-    is_admin: false,
-    group: -1,
-  })
-  .save()
-  .then(function(user){
-    data = {'success': true, 'user': user};
-  })
-  .catch(function(errors) {
-    console.log(errors);
-    var e = []
-    errors.errors.forEach(function(name) {
-      console.log(name.path);
-      e.push([name.path, name.message]);
+  //Validate
+  if (req.body.password !== req.body.password2) {
+    res.locals.errors.errors.push({'path': 'password', 'message': 'รหัสผ่านต้องเหมือนกันทั้ง 2 ข่อง'});
+    res.locals.errors.errors.push({'path': 'password2'});
+    res.render('user/create', {'success': false});
+  } else {
+    models.User
+    .build({
+      username: req.body.username,
+      password: req.body.password,
+      email: req.body.email,
+      is_admin: false,
+      group: req.body.group,
     })
-    data = {'success': false, errors: e};
-  });
-  res.render('user/create', data);
+    .save()
+    .then(function(user){
+      data = {'success': true, 'user': user};
+    })
+    .catch(function(errors) {
+      console.log(errors);
+      var e = {'path': [], 'msg': []}
+      errors.errors.forEach(function(name) {
+        e.path.push(name.path);
+        e.msg.push(name.message);
+      })
+      console.log(e);
+      data = {'success': false, 'err': true, 'errors': errors};
+    })
+    .finally(function(user) {
+       res.render('user/create', data);
+    });
+  }
+ 
 });
 module.exports = router;

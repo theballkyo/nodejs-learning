@@ -1,12 +1,22 @@
 'use strict';
+var bcrypt = require('bcryptjs');
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define('User', {
     username: {
       type: DataTypes.STRING,
       unique: true,
+      validate: {
+        notEmpty: {
+          msg: 'Username ห้ามเว้นว่าง'
+        }, 
+        len: {
+          args: [4,18],
+          msg: 'Username ความยาวต้องมี 4-18 ตัวอักษร'
+        }
+      }
     },
     password: {
-      type: DataTypes.STRING(32),
+      type: DataTypes.STRING(64),
       validate: {
         notEmpty: {
           msg: 'รหัสผ่านห้ามว่าง'
@@ -20,7 +30,9 @@ module.exports = function(sequelize, DataTypes) {
     email: {
       type: DataTypes.STRING,
       validate: {
-        isEmail: true
+        isEmail: {
+          msg: 'กรอก E-mail ให้ถูกต้องด้วย'
+        }
       },
       unique: true
     },
@@ -37,6 +49,11 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     underscored: true,
+    hooks: {
+      beforeCreate: function(user, options) {
+        user.password = bcrypt.hashSync(user.password, 8);
+      },
+    },
   });
 
   User.sync().then(function () {

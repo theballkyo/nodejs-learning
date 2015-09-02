@@ -39,11 +39,11 @@ app.use('/bower_components',  express.static(path.join(__dirname + '/bower_compo
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(function (req, res, next) {
-  res.locals.user = req.user ? req.user : false;
-  console.log(res.locals.user);
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.locals.user = req.user ? req.user : false;
+//   console.log(res.locals.user);
+//   next();
+// });
 
 app.use('/', routes);
 app.use('/users', users);

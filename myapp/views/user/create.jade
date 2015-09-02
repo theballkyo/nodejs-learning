@@ -7,14 +7,19 @@ block breadcrumb
   li.active create
 
 block alert
-  if !success
+  if err
     .callout.callout-warning
       h4 Errors!
       p
         ul
           each err in errors.errors
-            li= err.message
-
+            if err.message
+              li= err.message
+  if success
+    .callout.callout-success
+      h4 Success
+      p
+        | Yeah !
 block content 
   // right column
   .col-md-12
@@ -26,23 +31,23 @@ block content
       // form start
       form.form-horizontal(method='post')
         .box-body
-          .form-group
+          .form-group(class={'has-error': isError('username', errors.errors)})
             label.col-sm-2.control-label(for='username') Username
             .col-sm-10
               input#username.form-control(type='text', placeholder='Username', name='username')
-          .form-group
+          .form-group(class={'has-error': isError('email', errors.errors)})
             label.col-sm-2.control-label(for='email') Email
             .col-sm-10
               input#email.form-control(type='email', placeholder='Email' name='email')
-          .form-group
+          .form-group(class={'has-error': isError('password', errors.errors)})
             label.col-sm-2.control-label(for='password') Password
             .col-sm-10
               input#password.form-control(type='password', placeholder='Password', name='password')
-          .form-group
+          .form-group(class={'has-error': isError('password2', errors.errors)})
             label.col-sm-2.control-label(for='password2') Confirm Password
             .col-sm-10
               input#password2.form-control(type='password', placeholder='Confirm Password', name='password2')
-          .form-group
+          .form-group(class={'has-error': isError('group', errors.errors)})
             label.col-sm-2.control-label Group
             .col-sm-10
               select.form-control(name='group')
